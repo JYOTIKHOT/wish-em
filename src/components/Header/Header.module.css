@@ -1,0 +1,26 @@
+path {
+    stroke-width: 20px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 300px;
+    animation: dash 8000ms -10000ms infinite alternate ease-in-out,
+        w 7200ms -7200ms infinite alternate ease-in-out;
+}
+
+@keyframes dash {
+    100% {
+        stroke-dashoffset: -298px;
+    }
+}
+
+@keyframes w {
+    100% {
+        stroke-width: 12px;
+    }
+}
+
+@keyframes subtle {
+    100% {
+        transform: rotate(1turn);
+    }
+}

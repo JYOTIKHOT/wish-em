@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+}
+
+main {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+@layer components {
+
+  .gradiant-theme {
+    @apply bg-[length:200%_auto] bg-gradient-to-r from-[#00C9FF] via-[#92FE9D] to-[#00C9FF] text-white;
+  }
+}
