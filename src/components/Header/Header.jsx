@@ -2,7 +2,7 @@ import styles from "./Header.module.css";
 
 const Header = () => {
   return (
-    <header className="z-40 glass-container flex flex-row items-center justify-between p-4 fixed top-0 left-0 w-full text-white shadow-md transition-all duration-500 gradiant-theme hover:bg-[position:right_center]">
+    <header className="z-40 glass-container flex flex-row items-center justify-between p-4 fixed top-0 left-0 w-full text-white shadow-xl transition-all duration-500 gradiant-theme hover:bg-[position:right_center]">
       <div className="flex items-center">
         <h5 className="text-2xl font-extrabold font-serif">I</h5>
         <svg width="70" height="50" viewBox="0 0 150 150">

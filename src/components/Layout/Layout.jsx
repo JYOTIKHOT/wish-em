@@ -1,15 +1,15 @@
 import { Outlet } from "react-router";
 
 import Header from "../Header";
-
+import Footer from "../Footer";
 const Layout = () => {
   return (
     <>
       <Header />
-      <main>
+      <main className="h-screen relative">
         <Outlet />
       </main>
-      <footer></footer>
+      <Footer />
     </>
   );
 };
