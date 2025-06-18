@@ -1,0 +1,149 @@
+@use "sass:math";
+
+$t: 0.8s;
+
+@property --p {
+  syntax: "<number>";
+  initial-value: 0;
+  inherits: true;
+}
+
+@property --v {
+  syntax: "<number>";
+  initial-value: 0;
+  inherits: true;
+}
+
+.section {
+  --p: var(--k);
+  --abs-p: abs(var(--k) - var(--p));
+  --end: clamp(0, var(--abs-p) - 1, 1);
+  --dir: calc((1 - 2 * var(--end)) * sign(var(--k) - var(--p)));
+  --fwd: calc(0.5 * (1 + var(--dir)));
+  --v: var(--k);
+  --abs-v: abs(var(--v) - var(--p));
+  --prg: calc(var(--abs-v) / (1 - var(--end) + var(--end) * (var(--n) - 1)));
+
+  display: grid;
+  grid-gap: 0.5em 4em;
+  grid-template:
+    repeat(2, max-content) 1fr max-content /
+    max-content 1fr;
+  place-self: center;
+  color: #f1f5f9;
+  font: 1em poppins, sans-serif;
+  counter-reset: k calc(1 + var(--k)) n var(--n);
+  transition: --p 0s $t, --v $t;
+
+  &::before,
+  .em {
+    color: rgb(from currentColor r g b / 0.6);
+  }
+
+  &::before {
+    grid-area: 1 / 2;
+    width: 3ch;
+    text-align: right;
+    content: counter(k) "/" counter(n);
+  }
+
+  @supports not (scale: Abs(-2)) {
+    --abs-p: max(var(--k) - var(--p), var(--p) - var(--k));
+    --abs-v: max(var(--v) - var(--p), var(--p) - var(--v));
+  }
+
+  @supports not (scale: Sign(-2)) {
+    --dir: clamp(-1, (var(--k) - var(--p)) * 100000, 1);
+  }
+}
+
+.article {
+  --abs-top: abs(var(--k) - var(--i));
+  --not-top: min(1, var(--abs-top));
+  --top: calc(1 - var(--not-top));
+  --val-mov: ((1 - var(--fwd)) * var(--p) + var(--fwd) * var(--k) - var(--i));
+  --abs-mov: abs(var(--val-mov));
+  --not-mov: min(1, var(--abs-mov));
+  --mov: calc(1 - var(--not-mov));
+
+  grid-area: 1 / 1 / -1 / -1;
+  grid-template: subgrid / subgrid;
+  z-index: mod(calc(var(--n) - 1 + var(--i) - var(--k)), var(--n));
+  transition: z-index $t cubic-bezier(1, -0.9, 0, 1.9);
+
+  @supports not (scale: Abs(-2)) {
+    --abs-top: max(var(--k) - var(--i), var(--i) - var(--k));
+    --abs-mov: max(var(--val-mov), -1 * var(--val-mov));
+  }
+}
+
+.title {
+  grid-area: 2 / 2;
+  translate: 0 calc(var(--not-top) * 1lh);
+  opacity: var(--top);
+  transition: 0.5 * $t calc(var(--top) * 0.5 * $t);
+  transition-property: translate, opacity;
+}
+
+.em {
+  grid-area: 3 / 2;
+  translate: 0 calc(var(--not-top) * 1lh);
+  opacity: var(--top);
+  transition: 0.5 * $t calc(var(--top) * 0.5 * $t);
+  transition-property: translate, opacity;
+}
+
+.image {
+  --sin: sin(var(--prg) * 0.5turn);
+  grid-area: 1 / 1 / -1;
+  border: solid 2px rgba(82, 82, 122, 0.5);
+  height: 13em;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 0.75em;
+  translate: calc(-150% * var(--mov) * sqrt(var(--sin)));
+  rotate: calc((1 - var(--sin)) * var(--a));
+}
+
+.controls {
+  display: flex;
+  gap: 2em;
+  grid-area: 4 / 2;
+  z-index: calc((1 - min(1, var(--abs-p))) * var(--n));
+}
+
+.button {
+  --sgn: -1;
+  --prc: calc(var(--hov, 0) * 100%);
+  --c: color-mix(in hsl, #818cf8 var(--prc), #52527a);
+
+  border: none;
+  width: 1lh;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgb(from var(--c) r g b / 0.2);
+  color: color-mix(in hsl, #818cf8 var(--prc), currentcolor);
+  font: 900 2em/1.5 sans-serif;
+  transition: 0.3s ease-out;
+  transition-property: background-color, color;
+
+  &::before {
+    place-self: center;
+    border: solid 2px;
+    border-width: 2px 2px 0 0;
+    width: 35%;
+    aspect-ratio: 1;
+    translate: calc(var(--sgn) * -15%);
+    rotate: 45deg;
+    scale: var(--sgn);
+    content: "";
+  }
+
+  &[data-inc="1"] {
+    --sgn: 1;
+  }
+
+  &:is(:hover, :focus) {
+    --hov: 1;
+  }
+}
